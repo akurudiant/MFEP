@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perhitungan MFEP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        div {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input {
+            padding: 5px;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        #result {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Perhitungan MFEP</h1>
+    <form id="mfepForm">
+        <h3>Masukkan Nilai Kriteria</h3>
+        <div>
+            <label for="nama">Nama:</label>
+            <input type="text" id="nama" name="nama" required>
+        </div>
+        <div>
+            <label for="minat">Minat:</label>
+            <input type="number" id="minat" name="minat" required>
+        </div>
+        <div>
+            <label for="bakat">Bakat:</label>
+            <input type="number" id="bakat" name="bakat" required>
+        </div>
+        <div>
+            <label for="prestasi">Prestasi:</label>
+            <input type="number" id="prestasi" name="prestasi" required>
+        </div>
+        <div>
+            <label for="pengetahuan">Pengetahuan:</label>
+            <input type="number" id="pengetahuan" name="pengetahuan" required>
+        </div>
+        <div>
+            <label for="kreatifitas">Kreatifitas:</label>
+            <input type="number" id="kreatifitas" name="kreatifitas" required>
+        </div>
+        <button type="button" onclick="calculateMFEP()">Hitung</button>
+    </form>
+    <h2>Hasil:</h2>
+    <div id="result"></div>
+
+    <script>
+        function getSkala(nilai) {
+            if (nilai >= 85) return 4;
+            if (nilai >= 70) return 3;
+            if (nilai >= 55) return 2;
+            return 1;
+        }
+
+        function calculateMFEP() {
+            const bobot = {
+                minat: 0.3,
+                bakat: 0.3,
+                prestasi: 0.18,
+                pengetahuan: 0.12,
+                kreatifitas: 0.1
+            };
+
+            const nama = document.getElementById('nama').value;
+            const minat = parseFloat(document.getElementById('minat').value);
+            const bakat = parseFloat(document.getElementById('bakat').value);
+            const prestasi = parseFloat(document.getElementById('prestasi').value);
+            const pengetahuan = parseFloat(document.getElementById('pengetahuan').value);
+            const kreatifitas = parseFloat(document.getElementById('kreatifitas').value);
+
+            const skala = {
+                minat: getSkala(minat),
+                bakat: getSkala(bakat),
+                prestasi: getSkala(prestasi),
+                pengetahuan: getSkala(pengetahuan),
+                kreatifitas: getSkala(kreatifitas)
+            };
+
+            // Mengalikan skala awal dengan bobot faktor untuk mendapatkan hasil
+            const hasil = {
+                minat: skala.minat * bobot.minat,
+                bakat: skala.bakat * bobot.bakat,
+                prestasi: skala.prestasi * bobot.prestasi,
+                pengetahuan: skala.pengetahuan * bobot.pengetahuan,
+               
+                kreatifitas: skala.kreatifitas * bobot.kreatifitas
+            };
+
+            // Menjumlahkan bobot faktor
+            const totalBobot = bobot.minat + bobot.bakat + bobot.prestasi + bobot.pengetahuan + bobot.kreatifitas;
+
+            // Menghitung rata-rata bobot
+            const rataRataBobot = totalBobot / 5;
+
+            // Mengkalikan hasil dengan rata-rata bobot
+            const hasilAkhir = {
+                minat: hasil.minat * rataRataBobot,
+                bakat: hasil.bakat * rataRataBobot,
+                prestasi: hasil.prestasi * rataRataBobot,
+                pengetahuan: hasil.pengetahuan * rataRataBobot,
+                kreatifitas: hasil.kreatifitas * rataRataBobot
+            };
+
+            // Menghitung total skor
+            const totalSkor = hasilAkhir.minat + hasilAkhir.bakat + hasilAkhir.prestasi + hasilAkhir.pengetahuan + hasilAkhir.kreatifitas;
+
+            // Menentukan rekomendasi ekstrakurikuler berdasarkan skor rata-rata
+            let rekomendasi;
+            if (totalSkor >= 0.7250) rekomendasi = 'Basket';
+            else if (totalSkor >= 0.6750) rekomendasi = 'Volly';
+            else if (totalSkor >= 0.6000) rekomendasi = 'Pramuka';
+            else if (totalSkor >= 0.5250) rekomendasi = 'Palang Merah Remaja';
+            else rekomendasi = 'Paduan Suara';
+
+            // Menampilkan hasil
+            document.getElementById('result').innerHTML = `
+                <table>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Minat</th>
+                        <th>Bakat</th>
+                        <th>Prestasi</th>
+                        <th>Pengetahuan</th>
+                        <th>Kreatifitas</th>
+                        <th>Total Skor</th>
+                        <th>Rekomendasi Ekstrakurikuler</th>
+                    </tr>
+                    <tr>
+                        <td>${nama}</td>
+                        <td>${skala.minat}</td>
+                        <td>${skala.bakat}</td>
+                        <td>${skala.prestasi}</td>
+                        <td>${skala.pengetahuan}</td>
+                        <td>${skala.kreatifitas}</td>
+                        <td>${totalSkor.toFixed(2)}</td>
+                        <td>${rekomendasi}</td>
+                    </tr>
+                </table>
+            `;
+        }
+    </script>
+</body>
+</html>
